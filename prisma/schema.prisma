@@ -10,22 +10,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        String  @id @default(cuid())
-  title     String  @db.VarChar(255)
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  String
+enum MediaType {
+  Image
+  Video
+}
 
+model Donation {
+  id        String   @id @default(cuid())
+  amount    Int
+  message   String?
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  String
+  date      DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  reward    Reward?  @relation(fields: [rewardId], references: [id])
+  rewardId  String?
+}
+
+model Reward {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  price       Int
+  project     Project @relation(fields: [projectId], references: [id])
+  projectId   String
+
+  deliveryFrom String?
+  donations    Donation[]
+}
+
+model Project {
+  id                String    @id @default(cuid())
+  title             String
+  promo_media       String
+  media_type        MediaType
+  short_description String
+  owner             User      @relation(fields: [ownerId], references: [id], name: "projectOwner")
+  ownerId           String
+  likes             User[]    @relation(name: "projectLiked")
+
+  content String? // rich text
+
+  goal      Int
+  donations Donation[]
+  rewards   Reward[]
+
+  published Boolean  @default(false)
+  dueDate   DateTime
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model User {
-  id       String  @id @default(cuid())
-  email    String  @unique
-  password String
-  name     String?
-  posts    Post[]
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String?
+  donations Donation[]
+  projects  Project[]  @relation(name: "projectOwner")
+  liked     Project[]  @relation(name: "projectLiked")
 }
