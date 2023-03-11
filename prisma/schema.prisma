@@ -10,11 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum MediaType {
-  Image
-  Video
-}
-
 model Donation {
   id        String   @id @default(cuid())
   amount    Int
@@ -42,7 +37,7 @@ model Reward {
 
 model Category {
   id    Int    @id @default(autoincrement())
-  title String
+  title String @unique
 
   projects Project[]
 }
@@ -69,7 +64,6 @@ model Project {
   // scenario 1
   title             String
   promo_media       String
-  media_type        MediaType
   short_description String
   categories        Category[]
   goal              Int
