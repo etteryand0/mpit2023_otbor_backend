@@ -53,7 +53,7 @@ export const SignInInput = inputObjectType({
 })
 
 
-export const SignUpMutation = mutationField('signUp', {
+export const SignUpMutation = mutationField('signup', {
   type: 'Token',
   args: {
     data: 'SignUpInput',
@@ -76,7 +76,7 @@ export const SignUpMutation = mutationField('signUp', {
   }
 })
 
-export const SignIn = mutationField('signIn', {
+export const SignIn = mutationField('login', {
   type: 'Token',
   args: {
     data: 'SignInInput',
