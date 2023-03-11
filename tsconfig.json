@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["node_modules/@types", "src/server/@types"],
+    "allowJs": false,
+    //"checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": false,
+    "isolatedModules": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES6",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "incremental": true
+  },
+  "files": ["src/generated/nexus-typegen.ts"],
+  "exclude": ["node_modules"],
+  "include": ["**/*.ts"]
+}
