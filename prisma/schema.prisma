@@ -40,33 +40,64 @@ model Reward {
   donations    Donation[]
 }
 
+model Category {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  projects Project[]
+}
+
+model Kid {
+  id        String    @id @default(cuid())
+  name      String
+  age       Int
+  biography String?
+  location  String?
+  avatar    String?
+  links     String[]
+  projects  Project[]
+  User      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
 model Project {
-  id                String    @id @default(cuid())
+  id                String     @id @default(cuid())
+  owner             User       @relation(fields: [ownerId], references: [id], name: "projectOwner")
+  ownerId           String
+  likes             User[]     @relation(name: "projectLiked")
+  donations         Donation[]
+  // scenario 1
   title             String
   promo_media       String
   media_type        MediaType
   short_description String
-  owner             User      @relation(fields: [ownerId], references: [id], name: "projectOwner")
-  ownerId           String
-  likes             User[]    @relation(name: "projectLiked")
+  categories        Category[]
+  goal              Int
+  collectedAmount   Int        @default(0)
+  dueDate           DateTime
 
-  content String? // rich text
+  // scenario 2. Rich text
+  content String?
 
-  goal      Int
-  donations Donation[]
-  rewards   Reward[]
+  // scenario 3
+  rewards Reward[]
+
+  // scenario 4
+  kid   Kid    @relation(fields: [kidId], references: [id])
+  kidId String
 
   published Boolean  @default(false)
-  dueDate   DateTime
   createdAt DateTime @default(now())
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
+  id    String @id @default(cuid())
+  email String @unique
+
   password  String
   name      String?
   donations Donation[]
   projects  Project[]  @relation(name: "projectOwner")
   liked     Project[]  @relation(name: "projectLiked")
+  kids      Kid[]
 }
