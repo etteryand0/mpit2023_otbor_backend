@@ -50,8 +50,6 @@ model Kid {
   avatar    String?
   links     String[]
   projects  Project[]
-  User      User?     @relation(fields: [userId], references: [id])
-  userId    String?
 }
 
 model ProjectCheckPoint {
@@ -102,5 +100,4 @@ model User {
   donations Donation[]
   projects  Project[]  @relation(name: "projectOwner")
   liked     Project[]  @relation(name: "projectLiked")
-  kids      Kid[]
 }
