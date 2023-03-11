@@ -38,6 +38,7 @@ export const SignUpInput = inputObjectType({
   definition(t) {
     t.nonNull.field('email', { type: 'String' })
     t.nonNull.field('password', { type: 'String' })
+    t.nonNull.string('name')
   },
 })
 
@@ -54,9 +55,9 @@ export const SignInInput = inputObjectType({
 
 
 export const SignUpMutation = mutationField('signup', {
-  type: 'Token',
+  type: nonNull('Token'),
   args: {
-    data: 'SignUpInput',
+    data: nonNull('SignUpInput'),
   },
   async resolve(_parent, { data }, { prisma, user }) {
     if (user) {
@@ -88,7 +89,7 @@ export const SignIn = mutationField('login', {
 
     const userfound = await prisma.user.findUnique({
       where: { email: data.email },
-      select: { password: true }
+      select: { password: true, id: true }
     })
 
     if (!userfound) {
@@ -100,7 +101,7 @@ export const SignIn = mutationField('login', {
       throw new GraphQLError('Incorrect password or email', { extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT } })
     }
 
-    const token = sign({ userId: user.id }, JWT_SECRET)
+    const token = sign({ userId: userfound.id }, JWT_SECRET)
 
     return { token }
   }
