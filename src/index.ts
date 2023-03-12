@@ -18,33 +18,28 @@ const server = new ApolloServer({
   introspection: true
 })
 
-// app.use(fileUpload({
-//   useTempFiles : true,
-//   tempFileDir : process.env.TEMP_FILE_DIR 
-// }))
+app.use(fileUpload({
+  useTempFiles : true,
+  tempFileDir : process.env.TEMP_FILE_DIR 
+}))
 
-// app.post('/upload', function(req: any, res) {
-//   if (!req.files || Object.keys(req.files).length === 0) {
-//     return res.status(400).send('No files were uploaded.');
-//   }
+app.post('/upload', function(req: any, res) {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
 
+  const file = req.files.media
+  const filename = `${nanoid()}.${extname(file.name)}`
+  const uploadPath = join(FILE_UPLOAD_DIR, filename)
 
-//   for (const file in files) {
+  file.mv(uploadPath, (err) => {
+    if (err) {
+      return res.status(500).send(err)
+    }
 
-//     console.log(file)
-
-//     const filename = `${nanoid()}.${extname(file.name)}`
-//     file.mv(join(FILE_UPLOAD_DIR, filename), (err) => {
-//       if (err) {
-//         return res.status(500).send(err)
-//       }
-
-//       filenames.push(filename)
-//     })
-//   }
-
-//   return res.json(filenames)
-// });
+    return res.status(200).send(filename)
+  })
+});
 
 
 const run = async () => {
