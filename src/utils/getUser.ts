@@ -19,7 +19,7 @@ export const getUser = async (
     return null
   }
 
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { } })
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } })
 
   if (!user) {
     return null
